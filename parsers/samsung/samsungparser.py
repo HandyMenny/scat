@@ -127,7 +127,7 @@ class SamsungParser:
         elif self.model == 'e303':
             self.parse_diag_log_e303(pkt, radio_id)
 
-    def run_diag(self):
+    def run_diag(self, writer=None):
         self.logger.log(logging.INFO, 'Starting diag')
 
         oldbuf = b''
@@ -135,6 +135,9 @@ class SamsungParser:
         try:
             while True:
                 buf = self.io_device.read(0x9000)
+                #Use "scat" to separate messages
+                if writer:
+                    writer.write_cp(buf + b'\x73\x63\x61\x74')
                 #util.xxd(buf, True)
                 if len(buf) == 0:
                     continue
